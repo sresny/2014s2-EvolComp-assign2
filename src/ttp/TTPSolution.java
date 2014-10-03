@@ -12,16 +12,16 @@ import java.util.List;
  *
  * @author wagner
  */
-public class TTPSolution {
-    
+public class TTPSolution
+{
     public int[] tspTour;
     public int[] packingPlan;
-    
-/* "fp" final profit gained form the picked items,
-   "ft" the time takes to finish the tour (including changes of the speed),
-   "ob" objective value,
-   "wend" weight of the knapsack at the end of the tour   
-*/
+
+    /* "fp" final profit gained form the picked items,
+       "ft" the time takes to finish the tour (including changes of the speed),
+       "ob" objective value,
+       "wend" weight of the knapsack at the end of the tour
+    */
     public double fp   = Double.NEGATIVE_INFINITY;
     public double ft   = Double.POSITIVE_INFINITY;
     public long ftraw   = Long.MAX_VALUE;
@@ -29,8 +29,9 @@ public class TTPSolution {
     public double wend = Double.POSITIVE_INFINITY;
     public double wendUsed = Double.POSITIVE_INFINITY;
     public long computationTime = Long.MAX_VALUE;
-    
-    public void reset() {
+
+    public void reset()
+    {
         fp = Double.NEGATIVE_INFINITY;
         ft = Double.POSITIVE_INFINITY;
         ftraw = Long.MAX_VALUE;
@@ -39,88 +40,103 @@ public class TTPSolution {
         wendUsed = Double.POSITIVE_INFINITY;
         computationTime = Long.MAX_VALUE;
     }
-    
-    public void print() {
+
+    public void print()
+    {
         System.out.print(wend+" "+wendUsed+" "+fp+" "+ftraw+" "+ft+" "+ob +" "+computationTime);
     }
-    public void println() {
+    public void println()
+    {
         this.print();
         System.out.println();
     }
-    
-    public void printFull() {
+
+    public void printFull()
+    {
         this.println();
         System.out.println("tspTour "+Arrays.toString(tspTour));
         System.out.println("packingPlan "+Arrays.toString(packingPlan));
     }
-    
-    public double getObjective() {
+
+    public double getObjective()
+    {
         return this.ob;
     }
-    
-    public TTPSolution(int[] tspTour, int[] packingPlan) {
+
+    public TTPSolution(int[] tspTour, int[] packingPlan)
+    {
         this.tspTour = tspTour;
         this.packingPlan = packingPlan;
     }
-    
-    
-    
+
+
+
     /* answer() and writeResult(String file) are necessary for the participation in the competition.
-     * 
+     *
      * Text from http://cs.adelaide.edu.au/~optlog/CEC2014Comp/ follows:
-     * - Output: the file with the result for a single iteration should follow the following naming convention: 
+     * - Output: the file with the result for a single iteration should follow the following naming convention:
      *           <ttpfile>.<algorithmname>.<systemtime>, e.g.,
      *           a280_n279_bounded-strongly-corr_02.ttp.thisIsMyAlgorithm.12345678912
-     * - The file needs to contain the following information as comma-separated values in square brackets: 
-     *           the permutation of the cities in the first line (note: the first city is "1", do not print the "1" at the end), and 
-     *           the list of packed items in the second line (the numbering of the items starts with "1"). 
+     * - The file needs to contain the following information as comma-separated values in square brackets:
+     *           the permutation of the cities in the first line (note: the first city is "1", do not print the "1" at the end), and
+     *           the list of packed items in the second line (the numbering of the items starts with "1").
      *           For example:
      *                  [1,5,4,2,3]
      *                  [20,113]
-     *           which means that only the items with the numbers 20 and 113 are picked, and the sequence of visited cities is <1,5,4,2,3,1>. 
-     *           Note that this format can easily be achieved in Java with the function Arrays.toString(...). 
+     *           which means that only the items with the numbers 20 and 113 are picked, and the sequence of visited cities is <1,5,4,2,3,1>.
+     *           Note that this format can easily be achieved in Java with the function Arrays.toString(...).
      */
-    private String answer() {
-    	int[] tourOut = new int[tspTour.length - 1];
-    	for (int i = 0; i < tspTour.length - 1; i++){
-    		tourOut[i] = tspTour[i] + 1;
-    	}
-    	
-    	int itemsPerCity = packingPlan.length / (tspTour.length  -2);
-    	
-    	List<Integer> packingPlanList = new ArrayList<Integer>();
-    	int packingPlanIndex = 0;
-    	for (int i = 1; i < tspTour.length - 1; i++){
-    		int city = tspTour[i];
-    		for (int j = 0; j < itemsPerCity; j++){
-    			if (packingPlan[packingPlanIndex] == 1){
-    				int itemIndex = j * (tspTour.length  -2) + city - 1;
-    				int itemIndexFrom1 = itemIndex + 1;
-    				packingPlanList.add(itemIndexFrom1 );
-    			}
-    			packingPlanIndex++;
-    		}	    	
-    	}   	
-    	Collections.sort(packingPlanList);
-    	
-    	int[] packingOut = new int[packingPlanList.size()];
-    	for (int i = 0; i < packingPlanList.size(); i++){
-    		packingOut[i] = packingPlanList.get(i);
-    	}
+    private String answer()
+    {
+        int[] tourOut = new int[tspTour.length - 1];
+        for (int i = 0; i < tspTour.length - 1; i++)
+        {
+            tourOut[i] = tspTour[i] + 1;
+        }
+
+        int itemsPerCity = packingPlan.length / (tspTour.length  -2);
+
+        List<Integer> packingPlanList = new ArrayList<Integer>();
+        int packingPlanIndex = 0;
+        for (int i = 1; i < tspTour.length - 1; i++)
+        {
+            int city = tspTour[i];
+            for (int j = 0; j < itemsPerCity; j++)
+            {
+                if (packingPlan[packingPlanIndex] == 1)
+                {
+                    int itemIndex = j * (tspTour.length  -2) + city - 1;
+                    int itemIndexFrom1 = itemIndex + 1;
+                    packingPlanList.add(itemIndexFrom1 );
+                }
+                packingPlanIndex++;
+            }
+        }
+        Collections.sort(packingPlanList);
+
+        int[] packingOut = new int[packingPlanList.size()];
+        for (int i = 0; i < packingPlanList.size(); i++)
+        {
+            packingOut[i] = packingPlanList.get(i);
+        }
         return Arrays.toString(tourOut) + "\n" + Arrays.toString(packingOut) +  "\n";
     }
-    
-    public void writeResult(String title){
-            BufferedWriter writer = null;
-            try {
-                    writer = new BufferedWriter(new FileWriter(title, false));
-                    writer.write(this.answer());
-                    writer.flush();
-                    writer.close();
-            } catch (IOException e) {
-                    e.printStackTrace();
 
-            }
+    public void writeResult(String title)
+    {
+        BufferedWriter writer = null;
+        try
+        {
+            writer = new BufferedWriter(new FileWriter(title, false));
+            writer.write(this.answer());
+            writer.flush();
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+
+        }
     }
 
 }
