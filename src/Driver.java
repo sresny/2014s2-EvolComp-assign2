@@ -11,12 +11,10 @@ import ttp.Utils.DeepCopy;
 import ttp.Utils.Utils;
 
 /**
- *
  * @author wagner
  */
 public class Driver
 {
-
     /* The current sequence of parameters is
      * args[0]  folder with TTP files
      * args[1]  pattern to identify the TTP problems that should be solved
@@ -26,7 +24,6 @@ public class Driver
      */
     public static void main(String[] args)
     {
-
         if (args.length==0)
 //            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_", // to do all 10 instances (several files match the pattern)
 //            args = new String[]{"instances", "a280_n1395_bounded-strongly-corr_10.ttp", // to do just this 1 instance
@@ -40,9 +37,11 @@ public class Driver
     }
 
     // note: doBatch can process several files sequentially
+	// first argument: folder with TTP and TSP files, 
+	// second argument: partial filename of the instances to be solved
     public static void doBatch(String[] args)
     {
-//        String[] args = new String[]{"instances/","a2"};                      // first argument: folder with TTP and TSP files, second argument: partial filename of the instances to be solved
+//        String[] args = new String[]{"instances/","a2"};  
 //        System.out.println("parameters: "+Arrays.toString(args));
         File[] files = ttp.Utils.Utils.getFileList(args);
 

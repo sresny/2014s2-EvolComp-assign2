@@ -1,0 +1,8 @@
+#echos correctly
+ find . -iname \*java -exec bash -c "echo '{}'" \;
+#echos the first file every time  find . -iname \*java -exec bash -c "i='{}' ; j=`basename $i` ; echo enscript -Ejava -o ${j%%.*}.ps $j " \;
+#Shorter version of the above
+find . -iname \*java -exec bash -c " i='{}'; echo $i" \;
+#These 2 differ. Why?
+find . -iname \*java -exec bash -c "basename '{}' " \;
+find . -iname \*java -exec bash -c "echo `basename '{}'` " \;

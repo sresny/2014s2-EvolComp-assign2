@@ -7,12 +7,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author wagner
  */
 public class Utils
 {
-
+    private boolean debugPrint = false;
     public static long startTime = 0;
     public static long startTiming()
     {
@@ -39,17 +38,13 @@ public class Utils
 
     public static File[] getFileList(final String[] args)
     {
-
-        boolean debugPrint = false;
-
         File f = new File(args[0]);
         try
         {
             if (debugPrint) System.out.println(f.getCanonicalPath());
         }
         catch (IOException ex)
-        {
-        }
+        {}
 
         File[] fa = f.listFiles(new FilenameFilter()
         {
@@ -64,11 +59,12 @@ public class Utils
         });
 
         if (debugPrint)
-            for (File temp:fa)
+        {
+			for (File temp:fa)
             {
                 System.out.println(temp.getAbsolutePath());
             }
-
+		}
         return fa;
     }
 
@@ -87,7 +83,6 @@ public class Utils
         }
         return a;
     }
-
 
     public static void createClusterArray()
     {
@@ -175,33 +170,22 @@ public class Utils
                                          };
         String[] knapsackTypes = new String[] {"bounded-strongly-corr","uncorr-similar-weights","uncorr"};
         int[] knapsackCapacities = new int[] {1,3,5,10};
-
         int instancesCount = 10;
         String[] instances = new String[instancesCount];
         for (int i=1; i<=instancesCount; i++)
         {
-
             String value = "";
             if (i<10) value += "0";
             value += i;
-
             instances[i-1] = value;
         }
 
-
-
         String scriptLocation = "/home/mwagner/scratch/ttp/driver.sh";
-
         String subfolder = "instances";
-
-
-
-
         int overallSanity = 0;
 
         for (String tsp:tspNames)
         {
-
             int sanity = 0;
 
             Matcher matcher = Pattern.compile("[0-9]+").matcher(tsp);
@@ -209,41 +193,27 @@ public class Utils
 
             int numberOfCities = Integer.parseInt(matcher.group());
 //            String substring = tsp.substring(indexFirst);
-
 //            System.out.println(tsp+" "+matcher.group());
-
 //            matcher = Pattern.compile("\\s").matcher(tsp);
 //            matcher.find();
 //            int indexSecond = Integer.valueOf(matcher.group());
-
 //            int numberOfCities = Integer.parseInt(substring.substring(0, indexSecond));
-
 //            System.out.println(numberOfCities);
-
-
             for (int cap:knapsackCapacities)
             {
-
                 for (String type:knapsackTypes)
                 {
-
                     for (String i:instances)
                     {
-
                         String result = "";
-
                         result += scriptLocation + " " + subfolder + " "
                                   + tsp +"_n"+cap*(numberOfCities-1)+"_"
                                   + type + "_" + i+".ttp "
                                   ;
-
                         result += "1 10000 600000"; // approach, max iterations without impr., time in ms.
-
                         System.out.println(result);
                         sanity++;
-
                     }
-
                 }
             }
             overallSanity += sanity;
@@ -251,17 +221,24 @@ public class Utils
         }
         System.out.println("overallSanity="+overallSanity);
 
-
         for (String s:tspNames)
         {
             System.out.println("wget -c http://cs.adelaide.edu.au/~optlog/CEC2014COMP_Instances/"
                                +s+"-ttp.rar ");
         }
-
     }
 
     public static void main(String[] args)
     {
         createClusterArray();
     }
+    
+    //Debug-printing method. Assumes a useful toString method on the object
+    public static void debugPrintln(Object toPrint, boolean debugOn)
+    {
+		if(debugOn)
+		{
+			System.out.println(toPrint);
+		}
+	}
 }

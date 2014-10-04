@@ -179,7 +179,6 @@ class TTP
             ft=ft+
                (distances[tour[i]][tour[h]] / (1-wc*(vmax-vmin)/weightofKnapsack));
         }
-
         wend=weightofKnapsack-wc;
         ob=fp-ft*rentRate;
     }
